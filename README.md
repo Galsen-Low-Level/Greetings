@@ -65,6 +65,16 @@ $ >  make run-qemu   # launch qemu emulation and execute the MBR file
 - To generate all files, simply type `make`.
 
 
+##### ScreenShots 
+#### DOSBOX 
+![dosbox](screenshots/dosbox.png) 
+
+#### Qemu 
+
+![Qemu](screenshots/qemu-boot.png) 
+
+
+
 Feel free to contribute.
 
 We ❤️  Computers at all Levels. 
