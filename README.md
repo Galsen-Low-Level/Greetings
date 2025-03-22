@@ -1,19 +1,20 @@
 <img src="screenshots/glls1-logo-svg.png" width=""  height="" alt="gll-logo" style="margin-right:20px;border-radius:35px"  align="left"/><img src="screenshots/dosbox-logo.png" width="132"  height="" alt="dosbox" style="margin-right:20px;border-radius:35px"  align="right"/>
 <div>
-<h2>GLL Greetings </h2>
+
 <img src="screenshots/Qemu-logo.png" width="132"  height="" alt="Qemu" style="margin-right:20px"  align="right"/>
 <div>
 </div>
-<hr>
+
  <a href="https://github.com/Galsen-Low-Level/"><img src ='https://img.shields.io/badge/Greetings-teal?style=for-the-badge&logo=appveyor'/></a>
 
-# Greetings
 
 A simple 'Hello World' like program  but says “Greetings” at the assembly level.
 It uses the Netwide Assembly language, known as NASM.
 You can install  it  from the web  or from your package manager 
 Check [nasm-installation](https://www.nasm.us/) 
 
+
+<hr>
 So we have two programs that say “Greetings”. 
 - form [MS-DOS](https://en.wikipedia.org/wiki/MS-DOS) 
 - form the [MBR-Bootloader](https://en.wikipedia.org/wiki/Bootloader)
