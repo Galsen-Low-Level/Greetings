@@ -23,7 +23,9 @@ _start:
    mov ah ,02h   ;  Set the cursor position 
    int 010h 
    
-   mov ah , 0ah 
+   mov ah , 09h 
+   xor bx , bx   
+   mov bl , dl
    int 010h  
 
    inc si 
@@ -40,5 +42,4 @@ gll_greetings_boot_mesg: db "Greetings and Welcome to Galsen Low Level",0ah,00h
 
            
 times 510 - ($-$$) db 0    ; Fill with 0 
-dw  0AA55h                 ; boot signature   
-
+dw  0AA55h                 ; boot signature 
