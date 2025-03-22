@@ -13,8 +13,8 @@ It uses the Netwide Assembly language, known as NASM.
 You can install  it  from the web  or from your package manager 
 Check [nasm-installation](https://www.nasm.us/) 
 
+---
 
-<hr>
 So we have two programs that say “Greetings”. 
 - form [MS-DOS](https://en.wikipedia.org/wiki/MS-DOS) 
 - form the [MBR-Bootloader](https://en.wikipedia.org/wiki/Bootloader)
