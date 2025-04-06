@@ -3,48 +3,168 @@
 ; Author Umar Ba <jUmarB@protonmail.com> <github/Jukoo> 
 ;-------------------------------------------------------
 
-bits 16             ;    Using  16 bit mode  
-org 0x100           ;   .COM starting address this is specific to MS-DOS   
+[BITS 16]     ;    Using  16 bit mode  
+[ORG  0100h]  ;   .COM starting address this is specific to MS-DOS   
 
-xor si , si  
-xor bx ,bx
 
-;Set MS-DOS Video mode   
-;mov al , 013h      ; Graphical mode. 40x25. 256 colors. 320x200 pixels. 1 page. 
-;mov ah ,0 
-;int 010h  
-
-mov ah,03h         ;  Get cursor position   
+mov ah , 00h 
+mov al , 02h
 int 010h 
 
-mov cx , 01h       
-print_char:
-mov al , [gll_greetings_mesg+si]
-cmp al , 0        
-jz _print_char     
-cmp al , 0ah       ; Testing '\n' char to make linefeed 
-je linefeed
-cmp al  ,0dh       ; Testing 'enter' 13 
-je linefeed  
+mov si , bootmesg
+call print_console
 
-set_cursor_pos: 
-mov  ah, 02h 
-int  010h  
+mov si , login_username
+call print_console
 
-mov ah, 09h 
-mov bl, dl  
-int 010h 
+mov si , bootmesg
 
-inc si 
-inc dl 
-jmp print_char 
+call username_login_prompt
 
-_print_char: 
-ret 
+push si
+mov  si ,  greeting_mesg_to_user
+call print_console
 
-linefeed: 
-inc dh             ; next line 
-xor dl,dl          ; reset column 
-jmp set_cursor_pos
+pop si
+mov si , bootmesg
+call print_console
 
-gll_greetings_mesg: db "Welcome and Greetings to Galsen Low Level",0ah,00h 
+call linefeed
+
+mov si , linedraw
+mov byte[si+49] , 00h
+call print_console
+call linefeed
+
+mov ah , 03h
+int 010h
+
+inc dh
+xor dl ,dl
+
+mov ah , 02h
+int 010h
+
+mov si , shellmesg
+call print_console
+
+
+ret
+
+
+username_login_prompt:
+  push ax
+  push bx
+  push cx
+  push dx
+
+  mov  ah , 03h
+  int 10h
+
+  xor bx , bx
+  mov cx , 01h
+
+
+  __listen_kb_stroke:
+  mov ah , 01h
+  int  016h
+  jz __listen_kb_stroke
+
+  mov ah , 00h   ; Reading stdin buffer
+  int 016h
+
+  mov [si], al
+  inc si
+  cmp al ,0dh
+  je  listen_kb_stroke__
+
+  mov ah , 09h
+  mov bl , dl   ; NOTE for color attribute solid white replace the dl by 0111b
+  int 010h
+
+  inc dl
+  mov ah , 02h
+  int 010h
+
+  jmp __listen_kb_stroke
+
+
+  listen_kb_stroke__:
+  mov byte[si], 00h
+  call linefeed
+  mov  ah , 02h
+  int  010h
+
+  pop dx
+  pop cx
+  pop bx
+  pop ax
+  ret
+
+
+linefeed:
+  inc dh
+  xor dl , dl
+  ret
+
+print_console:
+  push dx
+  push bx
+  push ax
+  push cx
+
+
+  mov  ah , 03h
+  int  010h
+
+  xor bx, bx
+
+  __printer:
+  mov cx , 01h
+
+  mov  al , [si]
+  or   al , al
+  jz printer__
+
+  cmp  al , 0dh
+  je   jump_next_line
+
+  cmp  al , 0ah
+  je   jump_next_line
+
+
+  move_cursor_forward:
+  mov  ah , 02h
+  int  010h
+  cmp cx , 0h
+  je  incr
+
+  mov  ah , 09h
+  mov  bl , 0111b
+  int 010h
+
+
+  incr:
+  inc si
+  inc dl
+
+  jmp __printer
+
+  jump_next_line:
+  call linefeed
+  mov  cx , 00h
+  jmp  move_cursor_forward
+
+  printer__:
+  pop  cx
+  pop  ax
+  pop  bx
+  pop  dx
+  ret
+
+
+bootmesg : db ">> Marginal Boot System <<",0dh,"Welcome and Greeting to GLL",0ah ,00h
+login_username : db "User Login: ", 00h
+greeting_mesg_to_user : db "Welcome to GLL : " , 00h
+shellmesg : db "WARNING:No Shell Available  At This moment...",0dh,"Stay Tuned",0dh,"Appreciate Computers At All Level!",0ah,00h
+linedraw :times  50 db 0x2d
